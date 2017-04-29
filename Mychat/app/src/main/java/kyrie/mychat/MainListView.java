@@ -1,15 +1,25 @@
 package kyrie.mychat;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static android.R.attr.onClick;
+import static kyrie.mychat.R.id.parent;
 
 public class MainListView extends AppCompatActivity {
 
@@ -18,32 +28,24 @@ public class MainListView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_list_view);
 
+        String avaurl = "https://api.learn2crack.com/android/images/donut.png";
+        User item_user = new User("dalao", avaurl);
         ArrayList<User> arrayOfUsers = new ArrayList<User>();
-
-        UserAdapter adapter = new UserAdapter(this,arrayOfUsers);
-
-        ListView friListView = (ListView) findViewById(R.id.FriendsListView);
-        friListView.setAdapter(adapter);
-
-        User item_user = new User("dalao");
         for (int i = 0; i < 20; i ++){
             arrayOfUsers.add(item_user);
         }
-       /* ListView friendsList = (ListView) findViewById(R.id.FriendsListView);
-        ArrayList<String> friLst = new ArrayList<String>();
-        for (int i = 0; i < 20; i ++) {
-            friLst.add("dalao " + i);
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainListView.this,
-                android.R.layout.simple_list_item_1, friLst);
-        friendsList.setAdapter(adapter);
+        UserAdapter adapter = new UserAdapter(this,arrayOfUsers);
+        final ListView friListView = (ListView) findViewById(R.id.FriendsListView);
 
-        friendsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        friListView.setAdapter(adapter);
+
+        friListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                TextView friendName = (TextView) view;
-                System.out.println(friendName.getText().toString());
+                Intent intent = new Intent(MainListView.this, chatView.class);
+                startActivity(intent);
             }
-        });*/
+        });
+
     }
 }

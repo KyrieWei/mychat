@@ -1,6 +1,9 @@
 package kyrie.mychat;
 
 import android.media.Image;
+import android.widget.ImageView;
+
+import java.net.URL;
 
 /**
  * Created by Kyrie_wei on 28/04/2017.
@@ -8,10 +11,10 @@ import android.media.Image;
 
 public class User {
     public String userName;
-    //public Image userAvatar;
+    public String avatarUrl_Str;
 
-    public User(String userName){
+    public User(String userName, String avatarUrl_Str){
         this.userName = userName;
-        //this.userAvatar = userAvatar;
+        this.avatarUrl_Str = avatarUrl_Str;
     }
 }

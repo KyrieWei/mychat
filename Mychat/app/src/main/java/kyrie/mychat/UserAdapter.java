@@ -6,8 +6,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import java.util.ArrayList;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
-
 
 /**
  * Created by Kyrie_wei on 28/04/2017.
@@ -25,6 +25,9 @@ public class UserAdapter extends ArrayAdapter<User> {
         }
         TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
         tvName.setText(user.userName);
+        ImageView tvAvatar = (ImageView) convertView.findViewById(R.id.tvAvatar);
+        //new ImageLoad(user.avatarUrl_Str,tvAvatar).execute();
+        tvAvatar.setImageResource(R.drawable.huaji);
         return convertView;
     }
 
