@@ -31,5 +31,4 @@ public class myChatMessage {
         this.mContent = mContent;
     }
 
-
 }

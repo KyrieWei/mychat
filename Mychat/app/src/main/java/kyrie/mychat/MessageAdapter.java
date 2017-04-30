@@ -8,7 +8,6 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,55 +15,43 @@ import java.util.List;
  * Created by Kyrie_wei on 29/04/2017.
  */
 
-public class MessageAdapter extends BaseAdapter{
-
-    private Context mContext;
-    private List<myChatMessage> mData;
-
-    public MessageAdapter(Context context, List<myChatMessage> data){
-        this.mContext = context;
-        this.mData = data;
+public class MessageAdapter extends ArrayAdapter{
+    public MessageAdapter(Context context, ArrayList<myChatMessage> mess) {
+        super(context,0, mess);
     }
-
-    public void Refresh(){
-        this.notifyDataSetChanged();
-    }
-
-    @Override
-    public int getCount() {
-        return mData.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return mData.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        TextView Content;
-        ImageView ava_view;
-            switch(mData.get(position).getType()){
+            myChatMessage mes = (myChatMessage) getItem(position);
+            switch(mes.getType()){
                 case myChatMessage.MessageType_from:
-                    convertView = LayoutInflater.from(mContext).inflate(R.layout.rec_mes_layout,null);
-                    Content = (TextView)convertView.findViewById(R.id.rec_mes_view);
-                    Content.setText(mData.get(position).getContent());
-                    ava_view = (ImageView)convertView.findViewById(R.id.rec_avatar_view);
+                    if (convertView == null) {
+                        convertView = LayoutInflater.from(getContext()).inflate(R.layout.rec_mes_layout, parent, false);
+                    }
+                    TextView Content = (TextView)convertView.findViewById(R.id.rec_mes_view);
+                    Content.setText(mes.getContent());
+                    ImageView ava_view = (ImageView)convertView.findViewById(R.id.rec_avatar_view);
                     ava_view.setImageResource(R.drawable.huaji);
                     break;
                 case myChatMessage.MessageType_to:
-                    convertView = LayoutInflater.from(mContext).inflate(R.layout.send_mes_layout,null);
+                    if (convertView == null) {
+                        convertView = LayoutInflater.from(getContext()).inflate(R.layout.send_mes_layout, parent, false);
+                    }
                     Content = (TextView)convertView.findViewById(R.id.send_mes_view);
-                    Content.setText(mData.get(position).getContent());
-                    ava_view = (ImageView)convertView.findViewById(R.id.rec_avatar_view);
+                    Content.setText(mes.getContent());
+                    ava_view = (ImageView)convertView.findViewById(R.id.send_avatar_view);
                     ava_view.setImageResource(R.drawable.huaji);
                     break;
             }
             return convertView;
+    }
+
+    @Override
+    public boolean areAllItemsEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        return false;
     }
 }

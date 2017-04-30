@@ -5,5 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="buttonColor">#0095FF</color>
     <color name="bubbleColor">#31B50E</color>
-    <color name="rec_bubbleColor">#F2F2F2</color>
+    <color name="rec_bubbleColor">#86BFFC</color>
+    <color name="trans_dividerColor">#FFFFFF</color>
+    <color name="viewBackgroundColor">#DAD7D7</color>
 </resources>
