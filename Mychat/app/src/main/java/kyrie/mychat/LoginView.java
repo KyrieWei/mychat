@@ -17,14 +17,14 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.net.Socket;
 
-public class LoginView extends AppCompatActivity implements View.OnClickListener ,ClientConnector.ConnectListener{
+public class LoginView extends AppCompatActivity implements View.OnClickListener{
 
     private Button loginBtn;
     private EditText etUserName, etPassword;
     private TextView tvRegisterLink;
     private Client connector;
     private String DstName = "23.106.150.31";
-    private int DstPort = 3000;
+    private int DstPort = 4000;
     private HandlerThread handlerThread;
     private Handler handler;
 
@@ -60,8 +60,8 @@ public class LoginView extends AppCompatActivity implements View.OnClickListener
         switch(v.getId()){
             case R.id.signInBtn:
 
-                String Username = etUserName.getText().toString().trim();
-                String Password = etPassword.getText().toString().trim();
+                final String Username = etUserName.getText().toString().trim();
+                final String Password = etPassword.getText().toString().trim();
                 if (TextUtils.isEmpty(Username)){
                     Toast.makeText(this, "User Name Cannot Be Empty!",Toast.LENGTH_SHORT).show();
                     return;
@@ -70,14 +70,8 @@ public class LoginView extends AppCompatActivity implements View.OnClickListener
                     Toast.makeText(this, "Password Cannot Be Empty!",Toast.LENGTH_SHORT).show();
                     return;
                 }
-                try {
-                    Socket newSocket = new Socket("23.106.150.31", 4000);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    System.out.println("the new socket exception");
-                }
-                connector.run();
-                //startActivity(new Intent(this,MainListView.class));
+                connector.sendUserInfo(Username,Password);
+                //TODO: login in
                 break;
             case R.id.RegisterLink:
                 startActivity(new Intent(this,RegisterView.class));
@@ -85,8 +79,4 @@ public class LoginView extends AppCompatActivity implements View.OnClickListener
         }
     }
 
-    @Override
-    public void onReceiveData(String data) {
-
-    }
 }

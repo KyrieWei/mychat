@@ -16,40 +16,62 @@ import java.net.Socket;
 public class Client {
     public static final String IP_ADDR = "23.106.150.31";
     public static final int PORT = 4000;
-    public  Socket socket;
-    public  void run() {
+    public Socket socket;
 
-        while (true) {
-            try {
-                System.out.println("we begin the outputstream!!!!!!!");
-                socket = new Socket("23.106.150.31", PORT);
-                System.out.println("we new the socket...........");
-                DataInputStream input = new DataInputStream(socket.getInputStream());
-                DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-                String str = "hello kyrie";
-
-                out.writeUTF(str);
-                System.out.println("we have written str!!!!!!!");
-                String ret = input.readUTF();
-                if ("OK".equals(ret)) {
-                    Thread.sleep(500);
-                    break;
-                }
-
-                out.close();
-                input.close();
-            } catch (Exception e) {
-                return;
-            } finally {
-                if (socket != null) {
-                    try {
-                        socket.close();
-                    } catch (IOException e) {
-                        socket = null;
-                        return;
+    public  void sendUserInfo(final String userName, String userPassword) {
+        final  String _userName = userName;
+        final String _userPassword = userPassword;
+        new Thread() {
+            public void run(){
+                super.run();
+                try {
+                    socket = new Socket(IP_ADDR, PORT);
+                    DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+                    String str = _userName + "#" + _userPassword;
+                    out.writeUTF(str);
+                    out.close();
+                } catch(Exception e) {
+                    return;
+                } finally {
+                    if (socket != null) {
+                        try {
+                            socket.close();
+                        } catch (IOException e) {
+                            socket = null;
+                            return;
+                        }
                     }
                 }
             }
-        }
+        }.start();
+    }
+
+    public  void sendNewUserRegInfo(String newUserName, String newUserPassword, String conPassword) {
+        final String _newUserName = newUserName;
+        final String _newUserPassword = newUserPassword;
+        final String _conPassword = conPassword;
+        new Thread() {
+            public void run() {
+                super.run();
+                try {
+                    socket = new Socket(IP_ADDR, PORT);
+                    DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+                    String str = _newUserName + "#" + _newUserPassword + "#" + _conPassword;
+                    out.writeUTF(str);
+                    out.close();
+                } catch (Exception e) {
+                    return;
+                } finally {
+                    if (socket != null) {
+                        try {
+                            socket.close();
+                        } catch (IOException e) {
+                            socket = null;
+                            return;
+                        }
+                    }
+                }
+            }
+        }.start();
     }
 }
