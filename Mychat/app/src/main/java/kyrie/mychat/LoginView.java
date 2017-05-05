@@ -70,8 +70,21 @@ public class LoginView extends AppCompatActivity implements View.OnClickListener
                     Toast.makeText(this, "Password Cannot Be Empty!",Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 connector.sendUserInfo(Username,Password);
-                //TODO: login in
+
+                 /*   try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    } */
+
+                if(connector.isSuccess){
+                    Toast.makeText(this, "Login successfully ",Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(this,MainListView.class));
+                }else{
+                    Toast.makeText(this,"Login Failed! The user does not exist!",Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.RegisterLink:
                 startActivity(new Intent(this,RegisterView.class));

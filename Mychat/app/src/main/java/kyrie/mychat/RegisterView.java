@@ -1,6 +1,7 @@
 package kyrie.mychat;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -15,7 +16,6 @@ public class RegisterView extends AppCompatActivity implements View.OnClickListe
     EditText etNewUserName, etNewPassword, etConfNewPsw;
     Button registerBtn;
     Client sendRegInfo;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +34,7 @@ public class RegisterView extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.RegisterBtn:
-
+                Thread thread = new Thread();
                 final String newUserName = etNewUserName.getText().toString().trim();
                 final String newPassword = etNewPassword.getText().toString().trim();
                 final String conNewPassword = etConfNewPsw.getText().toString().trim();
@@ -58,7 +58,21 @@ public class RegisterView extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(this, "Confirm Password Is Inconsistent!",Toast.LENGTH_SHORT).show();
                     return;
                 }
-                sendRegInfo.sendNewUserRegInfo(newUserName,newPassword,conNewPassword);
+
+                sendRegInfo.sendUserInfo(newUserName,newPassword);
+                try {
+                    Thread.currentThread().wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }//TODO:FIX IT!
+
+                System.out.println("!!!!!!!!!!!!is Success: " + sendRegInfo.isSuccess);
+                if(sendRegInfo.isSuccess){
+                    Toast.makeText(this, "Successfully Registered!",Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(this,LoginView.class));
+                }else{
+                    Toast.makeText(this, "User name has been registered! ",Toast.LENGTH_SHORT).show();
+                }
                 break;
         }
     }

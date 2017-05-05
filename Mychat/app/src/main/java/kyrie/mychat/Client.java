@@ -13,14 +13,24 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
+
 public class Client {
     public static final String IP_ADDR = "23.106.150.31";
-    public static final int PORT = 4000;
+    public static final int PORT = 9602;
     public Socket socket;
 
-    public  void sendUserInfo(final String userName, String userPassword) {
+    /*final public byte server_failed = 1;
+    final public byte username_duplicated = 2;
+    final public byte username_not_exist = 3;
+    final public byte successed = 0;*/
+
+    public boolean isSuccess = true;
+
+
+    public  void sendUserInfo(String userName, String userPassword){
         final  String _userName = userName;
         final String _userPassword = userPassword;
+        isSuccess = true;
         new Thread() {
             public void run(){
                 super.run();
@@ -30,7 +40,14 @@ public class Client {
                     String str = _userName + "#" + _userPassword;
                     out.writeUTF(str);
                     out.close();
+
+                    DataInputStream in = new DataInputStream(socket.getInputStream());
+                    byte is_suc = in.readByte();
+                    System.out.println("!!!!!!!!!!!the byte is: " + is_suc);
+                    in.close();
                 } catch(Exception e) {
+                    isSuccess = false;
+                    System.out.println("something 1 is wrong!!!!!!!!!!");
                     return;
                 } finally {
                     if (socket != null) {
@@ -38,6 +55,7 @@ public class Client {
                             socket.close();
                         } catch (IOException e) {
                             socket = null;
+                            System.out.println("something 2 is wrong!!!!!!!!!!");
                             return;
                         }
                     }
@@ -45,6 +63,7 @@ public class Client {
             }
         }.start();
     }
+
 
     public  void sendNewUserRegInfo(String newUserName, String newUserPassword, String conPassword) {
         final String _newUserName = newUserName;
@@ -56,7 +75,7 @@ public class Client {
                 try {
                     socket = new Socket(IP_ADDR, PORT);
                     DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-                    String str = _newUserName + "#" + _newUserPassword + "#" + _conPassword;
+                    String str = _newUserName + "#" + _newUserPassword;
                     out.writeUTF(str);
                     out.close();
                 } catch (Exception e) {

@@ -24,6 +24,7 @@ public class addFriendsView extends AppCompatActivity implements View.OnClickLis
         SearchFriBtn.setOnClickListener(this);
     }
 
+
     @Override
     public void onClick(View v) {
         switch (v.getId()){
