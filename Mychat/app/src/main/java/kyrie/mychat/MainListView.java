@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,9 +17,13 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.List;
 
 import static android.R.attr.onClick;
@@ -26,6 +31,7 @@ import static kyrie.mychat.R.id.add;
 import static kyrie.mychat.R.id.parent;
 
 public class MainListView extends AppCompatActivity {
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -52,10 +58,10 @@ public class MainListView extends AppCompatActivity {
         setContentView(R.layout.activity_main_list_view);
 
         String avaurl = "https://api.learn2crack.com/android/images/donut.png";
-        User item_user = new User("dalao", avaurl);
-        ArrayList<User> arrayOfUsers = new ArrayList<User>();
+        friendInfo friend_item = new friendInfo("dalao",avaurl);
+        ArrayList<friendInfo> arrayOfUsers = new ArrayList<friendInfo>();
         for (int i = 0; i < 20; i ++){
-            arrayOfUsers.add(item_user);
+            arrayOfUsers.add(friend_item);
         }
         UserAdapter adapter = new UserAdapter(this,arrayOfUsers);
         final ListView friListView = (ListView) findViewById(R.id.FriendsListView);
@@ -70,5 +76,25 @@ public class MainListView extends AppCompatActivity {
             }
         });
 
+        String ip = getLocalIpAddress();
+        System.out.println("the ip is: " + ip + " !!!!!!!!!!!!!!!!!!!!!!!!!");
+    }
+
+    public String getLocalIpAddress() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress()) {
+                        String ip = Formatter.formatIpAddress(inetAddress.hashCode());
+                        return ip;
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

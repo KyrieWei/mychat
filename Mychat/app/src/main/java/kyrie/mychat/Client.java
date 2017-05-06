@@ -6,12 +6,17 @@ package kyrie.mychat;
 
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.logging.SocketHandler;
 
 
 public class Client {
@@ -19,66 +24,96 @@ public class Client {
     public static final int PORT = 9602;
     public Socket socket;
 
-    /*final public byte server_failed = 1;
-    final public byte username_duplicated = 2;
-    final public byte username_not_exist = 3;
-    final public byte successed = 0;*/
+    final public String server_failed = "1";
+    final public String username_duplicated = "2";
+    final public String username_not_exist = "3";
+    final public String password_wrong = "4";
+    final public String successed = "0";
 
-    public boolean isSuccess = true;
+    public String isSuccess = successed;
 
 
-    public  void sendUserInfo(String userName, String userPassword){
+
+
+    public  void sendUserInfo(String userName, String userPassword, String type){
         final  String _userName = userName;
         final String _userPassword = userPassword;
-        isSuccess = true;
+        final String _type = type;
         new Thread() {
             public void run(){
                 super.run();
-                try {
-                    socket = new Socket(IP_ADDR, PORT);
-                    DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-                    String str = _userName + "#" + _userPassword;
-                    out.writeUTF(str);
-                    out.close();
-
-                    DataInputStream in = new DataInputStream(socket.getInputStream());
-                    byte is_suc = in.readByte();
-                    System.out.println("!!!!!!!!!!!the byte is: " + is_suc);
-                    in.close();
-                } catch(Exception e) {
-                    isSuccess = false;
-                    System.out.println("something 1 is wrong!!!!!!!!!!");
-                    return;
-                } finally {
-                    if (socket != null) {
-                        try {
-                            socket.close();
-                        } catch (IOException e) {
-                            socket = null;
-                            System.out.println("something 2 is wrong!!!!!!!!!!");
-                            return;
+                    try {
+                        socket = new Socket(IP_ADDR, PORT);
+                        DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+                        DataInputStream in = new DataInputStream(socket.getInputStream());
+                        String str = _type + "#" + _userName + "#" + _userPassword;
+                        out.writeUTF(str);
+                        String is_suc = in.readUTF();
+                        System.out.println("!!!!!!!!!!!the byte is: " + is_suc);
+                        if(is_suc.equals(username_duplicated)){
+                            isSuccess = username_duplicated;
+                        }else if(is_suc.equals(username_not_exist)){
+                            isSuccess = username_not_exist;
+                        }else if(is_suc.equals(password_wrong)){
+                            isSuccess = password_wrong;
+                        } else{
+                            isSuccess = successed;
+                        }
+                        out.close();
+                        in.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        isSuccess = server_failed;
+                        System.out.println("something 1 is wrong!!!!!!!!!!");
+                        return;
+                    } finally {
+                        if (socket != null) {
+                            try {
+                                socket.close();
+                            } catch (IOException e) {
+                                socket = null;
+                                System.out.println("something 2 is wrong!!!!!!!!!!");
+                                return;
+                            }
                         }
                     }
                 }
-            }
         }.start();
     }
 
 
-    public  void sendNewUserRegInfo(String newUserName, String newUserPassword, String conPassword) {
-        final String _newUserName = newUserName;
-        final String _newUserPassword = newUserPassword;
-        final String _conPassword = conPassword;
+    public  void LoginRequest(User user) {
+        final User _user = user;
         new Thread() {
             public void run() {
                 super.run();
                 try {
                     socket = new Socket(IP_ADDR, PORT);
                     DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-                    String str = _newUserName + "#" + _newUserPassword;
-                    out.writeUTF(str);
+                    DataInputStream in = new DataInputStream(socket.getInputStream());
+                    JSONObject json = new JSONObject();
+                    json.put("username",_user.userName);
+                    json.put("password",_user.passWord);
+                    json.put("mIP_ADDR",_user.IP_ADDR);
+                    json.put("mPORT",_user.PORT);
+                    json.put("type",_user.type);
+                    //BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(),"utf-8"));
+                    out.writeBytes(json.toString() + "\n");
+                    String is_suc = in.readUTF();
+                    System.out.println("!!!!!!!!!!!the byte is: " + is_suc);
+                    if(is_suc.equals(username_duplicated)){
+                        isSuccess = username_duplicated;
+                    }else if(is_suc.equals(username_not_exist)){
+                        isSuccess = username_not_exist;
+                    }else if(is_suc.equals(password_wrong)){
+                        isSuccess = password_wrong;
+                    } else{
+                        isSuccess = successed;
+                    }
                     out.close();
+                    in.close();
                 } catch (Exception e) {
+                    isSuccess = server_failed;
                     return;
                 } finally {
                     if (socket != null) {
@@ -93,4 +128,5 @@ public class Client {
             }
         }.start();
     }
+
 }

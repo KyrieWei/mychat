@@ -7,6 +7,7 @@ import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.text.format.Formatter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,7 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.Enumeration;
 
 public class LoginView extends AppCompatActivity implements View.OnClickListener{
 
@@ -27,6 +32,8 @@ public class LoginView extends AppCompatActivity implements View.OnClickListener
     private int DstPort = 4000;
     private HandlerThread handlerThread;
     private Handler handler;
+
+    private User client_user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,13 +52,27 @@ public class LoginView extends AppCompatActivity implements View.OnClickListener
     }
 
     private void initData(){
-        handlerThread = new HandlerThread("LoginView");
-        handlerThread.start();
-        handler = new Handler(handlerThread.getLooper());
-
         connector = new Client();
         loginBtn.setOnClickListener(this);
         tvRegisterLink.setOnClickListener(this);
+    }
+
+    public String getLocalIpAddress() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress()) {
+                        String ip = Formatter.formatIpAddress(inetAddress.hashCode());
+                        return ip;
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
 
@@ -60,8 +81,13 @@ public class LoginView extends AppCompatActivity implements View.OnClickListener
         switch(v.getId()){
             case R.id.signInBtn:
 
-                final String Username = etUserName.getText().toString().trim();
-                final String Password = etPassword.getText().toString().trim();
+                String Username = etUserName.getText().toString().trim();
+                String Password = etPassword.getText().toString().trim();
+                String IP_ADDR = getLocalIpAddress();
+                int PORT = 9602;
+                String type = "login";
+                client_user = new User(Username, IP_ADDR, PORT, Password,type);
+
                 if (TextUtils.isEmpty(Username)){
                     Toast.makeText(this, "User Name Cannot Be Empty!",Toast.LENGTH_SHORT).show();
                     return;
@@ -71,19 +97,24 @@ public class LoginView extends AppCompatActivity implements View.OnClickListener
                     return;
                 }
 
-                connector.sendUserInfo(Username,Password);
+                connector.LoginRequest(client_user);
 
-                 /*   try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } */
+                try {
+                    Thread.sleep(2500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-                if(connector.isSuccess){
+                System.out.println("!!!!!!!!!!!isSuccess:" + connector.isSuccess);
+                if(connector.isSuccess.equals(connector.successed)){
                     Toast.makeText(this, "Login successfully ",Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(this,MainListView.class));
-                }else{
+                }else if(connector.isSuccess.equals(connector.username_not_exist)){
                     Toast.makeText(this,"Login Failed! The user does not exist!",Toast.LENGTH_SHORT).show();
+                }else if(connector.isSuccess.equals(connector.server_failed)){
+                    Toast.makeText(this, "Server has been closed! ",Toast.LENGTH_SHORT).show();
+                }else if(connector.isSuccess.equals(connector.password_wrong)){
+                    Toast.makeText(this, "Password is wrong! ",Toast.LENGTH_SHORT).show();
                 }
                 break;
             case R.id.RegisterLink:

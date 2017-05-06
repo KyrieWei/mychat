@@ -59,19 +59,22 @@ public class RegisterView extends AppCompatActivity implements View.OnClickListe
                     return;
                 }
 
-                sendRegInfo.sendUserInfo(newUserName,newPassword);
+                sendRegInfo.sendUserInfo(newUserName,newPassword,"register");
+
                 try {
-                    Thread.currentThread().wait();
+                    Thread.sleep(2500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                }//TODO:FIX IT!
+                }
 
                 System.out.println("!!!!!!!!!!!!is Success: " + sendRegInfo.isSuccess);
-                if(sendRegInfo.isSuccess){
+                if(sendRegInfo.isSuccess.equals(sendRegInfo.successed)){
                     Toast.makeText(this, "Successfully Registered!",Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(this,LoginView.class));
-                }else{
+                }else if(sendRegInfo.isSuccess.equals(sendRegInfo.username_duplicated)){
                     Toast.makeText(this, "User name has been registered! ",Toast.LENGTH_SHORT).show();
+                }else if(sendRegInfo.isSuccess.equals(sendRegInfo.server_failed)){
+                    Toast.makeText(this, "Server has been closed! ",Toast.LENGTH_SHORT).show();
                 }
                 break;
         }

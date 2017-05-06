@@ -35,8 +35,9 @@ public class chatView extends AppCompatActivity implements View.OnClickListener{
         mAdapter = new MessageAdapter(this, mData);
         chatListView.setAdapter(mAdapter);
         chatListView.smoothScrollToPositionFromTop(mData.size(),0);
-
     }
+
+
 
     private ArrayList<myChatMessage> LoadData() {
         ArrayList<myChatMessage> Messages = new ArrayList<myChatMessage>();
@@ -71,7 +72,10 @@ public class chatView extends AppCompatActivity implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sendMesBtn:
-                startActivity(new Intent(this, MainListView.class));
+                //TODO:Send Mes
+                String sendMes = editMesView.getText().toString().trim();
+
+                //startActivity(new Intent(this, MainListView.class));
                 break;
         }
     }
