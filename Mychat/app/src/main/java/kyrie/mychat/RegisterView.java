@@ -16,6 +16,7 @@ public class RegisterView extends AppCompatActivity implements View.OnClickListe
     EditText etNewUserName, etNewPassword, etConfNewPsw;
     Button registerBtn;
     Client sendRegInfo;
+    public User user_register;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,9 @@ public class RegisterView extends AppCompatActivity implements View.OnClickListe
                 final String newUserName = etNewUserName.getText().toString().trim();
                 final String newPassword = etNewPassword.getText().toString().trim();
                 final String conNewPassword = etConfNewPsw.getText().toString().trim();
+                final String type = "register";
+
+                user_register = new User(newUserName, newPassword,type);
 
                 if (TextUtils.isEmpty(newUserName)){
                     Toast.makeText(this, "User Name Cannot Be Empty!",Toast.LENGTH_SHORT).show();
@@ -59,8 +63,8 @@ public class RegisterView extends AppCompatActivity implements View.OnClickListe
                     return;
                 }
 
-                sendRegInfo.sendUserInfo(newUserName,newPassword,"register");
-
+                sendRegInfo.LoginRequest(user_register);
+                //sendRegInfo.sendUserInfo(newUserName,newPassword,type);
                 try {
                     Thread.sleep(2500);
                 } catch (InterruptedException e) {

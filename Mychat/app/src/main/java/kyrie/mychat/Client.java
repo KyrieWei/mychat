@@ -6,6 +6,7 @@ package kyrie.mychat;
 
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -15,7 +16,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.Array;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.logging.SocketHandler;
 
 
@@ -23,6 +26,8 @@ public class Client {
     public static final String IP_ADDR = "23.106.150.31";
     public static final int PORT = 9602;
     public Socket socket;
+    public BufferedWriter out;
+    public BufferedReader in;
 
     final public String server_failed = "1";
     final public String username_duplicated = "2";
@@ -31,7 +36,7 @@ public class Client {
     final public String successed = "0";
 
     public String isSuccess = successed;
-
+    public ArrayList<String> friendList = new ArrayList<String>();
 
 
 
@@ -89,17 +94,27 @@ public class Client {
                 super.run();
                 try {
                     socket = new Socket(IP_ADDR, PORT);
-                    DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-                    DataInputStream in = new DataInputStream(socket.getInputStream());
+                    //DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+                    //DataInputStream in = new DataInputStream(socket.getInputStream());
+                    in = new BufferedReader(new InputStreamReader(socket.getInputStream(),"utf-8"));
+                    out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(),"utf-8"));
                     JSONObject json = new JSONObject();
                     json.put("username",_user.userName);
                     json.put("password",_user.passWord);
-                    json.put("mIP_ADDR",_user.IP_ADDR);
-                    json.put("mPORT",_user.PORT);
+                    //json.put("mIP_ADDR",_user.IP_ADDR);
+                    //json.put("mPORT",_user.PORT);
                     json.put("type",_user.type);
                     //BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(),"utf-8"));
-                    out.writeBytes(json.toString() + "\n");
-                    String is_suc = in.readUTF();
+                    out.write(json.toString() + "\n");
+                    out.flush();
+                    String data = in.readLine();
+                    //String is_suc = in.readUTF();
+                    JSONObject rec_msg = new JSONObject(data);
+                    String is_suc = rec_msg.getString("is_success");
+                    JSONArray fri = rec_msg.getJSONArray("friendlist");
+                    for (int i = 0; i < fri.length(); i ++){
+                        friendList.add(fri.getString(i));
+                    }
                     System.out.println("!!!!!!!!!!!the byte is: " + is_suc);
                     if(is_suc.equals(username_duplicated)){
                         isSuccess = username_duplicated;

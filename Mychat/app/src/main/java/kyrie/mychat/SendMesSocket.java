@@ -28,12 +28,10 @@ public class SendMesSocket {
     public final static String IP_ADDR = "23.106.150.31";
     public final static int PORT = 5000;
 
-    public String socketID;
-    public String msg;
+    public SendMesInfo sendMesInfo = new SendMesInfo();
 
-    private void initView(String socketID, String msg){
-        this.socketID = socketID;
-        this.msg = msg;
+    private void initData(){
+        //sendMesInfo.initData();
         mHandler = new SocketHandler();
     }
 
@@ -46,7 +44,6 @@ public class SendMesSocket {
                     mSocket = new Socket(IP_ADDR,PORT);
                     mReader = new BufferedReader(new InputStreamReader(mSocket.getInputStream(),"utf-8"));
                     mWriter = new BufferedWriter(new OutputStreamWriter(mSocket.getOutputStream(),"utf-8"));
-
                     while(isStartRecieveMsg){
                         if(mReader.ready()){
                             String data = mReader.readLine();
@@ -78,8 +75,9 @@ public class SendMesSocket {
     protected void sendMsg() {
         try {
             JSONObject json = new JSONObject();
-            json.put("to", socketID);
-            json.put("msg", msg);
+            json.put("to", sendMesInfo.username_to);
+            json.put("msg", sendMesInfo.sendMes);
+            json.put("from", sendMesInfo.username_from);
             mWriter.write(json.toString()+"\n");
             mWriter.flush();
         } catch (Exception e) {

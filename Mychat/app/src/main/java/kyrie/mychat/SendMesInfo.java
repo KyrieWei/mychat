@@ -5,15 +5,14 @@ package kyrie.mychat;
  */
 
 public class SendMesInfo {
-    private String username_from;
-    private String username_to;
-    private String user_from_ip;
-    private String sendMes;
+    public String username_from;
+    public String username_to;
+    public String sendMes;
 
-    public void SendMesInfo(String username_from, String username_to, String user_from_ip,String sendMes){
+/*    public void initData(String username_from, String username_to, String sendMes){
         this.username_from = username_from;
         this.username_to = username_to;
-        this.user_from_ip = user_from_ip;
+        //this.user_from_ip = user_from_ip;
         this.sendMes = sendMes;
-    }
+    }*/
 }

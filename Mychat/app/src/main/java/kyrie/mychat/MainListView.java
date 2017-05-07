@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.format.Formatter;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -32,6 +34,9 @@ import static kyrie.mychat.R.id.parent;
 
 public class MainListView extends AppCompatActivity {
 
+    public String my_name;
+    public ArrayList<String> friendNameArr = new ArrayList<String>();
+    private long firstTime = 0;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -58,9 +63,14 @@ public class MainListView extends AppCompatActivity {
         setContentView(R.layout.activity_main_list_view);
 
         String avaurl = "https://api.learn2crack.com/android/images/donut.png";
-        friendInfo friend_item = new friendInfo("dalao",avaurl);
+
+        Intent intent = getIntent();
+        my_name = intent.getStringExtra("my_name");
+        friendNameArr = intent.getStringArrayListExtra("friendlist");
         ArrayList<friendInfo> arrayOfUsers = new ArrayList<friendInfo>();
-        for (int i = 0; i < 20; i ++){
+
+        for (int i = 0; i < friendNameArr.size(); i ++){
+            friendInfo friend_item = new friendInfo(friendNameArr.get(i),avaurl);
             arrayOfUsers.add(friend_item);
         }
         UserAdapter adapter = new UserAdapter(this,arrayOfUsers);
@@ -71,16 +81,32 @@ public class MainListView extends AppCompatActivity {
         friListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String sendMesTo_name = friendNameArr.get(position);
+
                 Intent intent = new Intent(MainListView.this, chatView.class);
                 startActivity(intent);
             }
         });
 
-        String ip = getLocalIpAddress();
-        System.out.println("the ip is: " + ip + " !!!!!!!!!!!!!!!!!!!!!!!!!");
     }
 
-    public String getLocalIpAddress() {
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+            long secondTime = System.currentTimeMillis();
+            if (secondTime - firstTime > 2000) {
+                Toast.makeText(MainListView.this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+                firstTime = secondTime;
+                return true;
+            } else {
+                System.exit(0);
+            }
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
+    /*public String getLocalIpAddress() {
         try {
             for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
                 NetworkInterface intf = en.nextElement();
@@ -96,5 +122,5 @@ public class MainListView extends AppCompatActivity {
             ex.printStackTrace();
         }
         return null;
-    }
+    }*/
 }

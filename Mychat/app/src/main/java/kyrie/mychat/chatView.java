@@ -20,6 +20,8 @@ public class chatView extends AppCompatActivity implements View.OnClickListener{
     ArrayList<myChatMessage> mData;
     MessageAdapter mAdapter;
 
+    public SendMesInfo msg_to_send = new SendMesInfo();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +39,10 @@ public class chatView extends AppCompatActivity implements View.OnClickListener{
         chatListView.smoothScrollToPositionFromTop(mData.size(),0);
     }
 
+    public void getuserInfo(String user_from, String user_to){
+        msg_to_send.username_from = user_from;
+        msg_to_send.username_to = user_to;
+    }
 
 
     private ArrayList<myChatMessage> LoadData() {
@@ -74,7 +80,7 @@ public class chatView extends AppCompatActivity implements View.OnClickListener{
             case R.id.sendMesBtn:
                 //TODO:Send Mes
                 String sendMes = editMesView.getText().toString().trim();
-
+                msg_to_send.sendMes = sendMes;
                 //startActivity(new Intent(this, MainListView.class));
                 break;
         }
