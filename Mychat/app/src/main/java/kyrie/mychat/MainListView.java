@@ -36,7 +36,12 @@ public class MainListView extends AppCompatActivity {
 
     public String my_name;
     public ArrayList<String> friendNameArr = new ArrayList<String>();
+    public ArrayList<String> friend_online = new ArrayList<String>();
     private long firstTime = 0;
+
+    private static SendMesSocket sendMesSocket = SendMesSocket.getInstance();
+    public SendMesInfo sendMesInfo;
+    public boolean isOnline;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -67,12 +72,17 @@ public class MainListView extends AppCompatActivity {
         Intent intent = getIntent();
         my_name = intent.getStringExtra("my_name");
         friendNameArr = intent.getStringArrayListExtra("friendlist");
+
+        //sendMesSocket = (SendMesSocket)getApplication();
+        sendMesInfo = new SendMesInfo();
+
         ArrayList<friendInfo> arrayOfUsers = new ArrayList<friendInfo>();
 
         for (int i = 0; i < friendNameArr.size(); i ++){
             friendInfo friend_item = new friendInfo(friendNameArr.get(i),avaurl);
             arrayOfUsers.add(friend_item);
         }
+
         UserAdapter adapter = new UserAdapter(this,arrayOfUsers);
         final ListView friListView = (ListView) findViewById(R.id.FriendsListView);
 
@@ -83,12 +93,35 @@ public class MainListView extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 String sendMesTo_name = friendNameArr.get(position);
-
-                Intent intent = new Intent(MainListView.this, chatView.class);
-                startActivity(intent);
+                sendMesInfo.username_from = my_name;
+                sendMesInfo.username_to = sendMesTo_name;
+                sendMesInfo.sendMes = " ";
+                sendMesInfo.socketType = "startchat";
+                sendMesSocket.startReceiveMsg(sendMesInfo);
+                //sendMesSocket.send();
+                friend_online = sendMesSocket.online_frilist;
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("!!!!!!!!!!!the friends who are online: " + friend_online);
+                isOnline = false;
+                for(String item : friend_online){
+                    if(item.equals(sendMesTo_name)){
+                        isOnline = true;
+                    }
+                }
+                if(isOnline) {
+                    Intent intent = new Intent(MainListView.this, MainListView.class);
+                    intent.putExtra("sendMsg_to", sendMesTo_name);
+                    intent.putExtra("my_name", my_name);
+                    startActivity(intent);
+                }else {
+                    Toast.makeText(MainListView.this, "Sorry, he / she is not online!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
-
     }
 
     @Override
@@ -106,21 +139,4 @@ public class MainListView extends AppCompatActivity {
         return super.onKeyUp(keyCode, event);
     }
 
-    /*public String getLocalIpAddress() {
-        try {
-            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements();) {
-                NetworkInterface intf = en.nextElement();
-                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements();) {
-                    InetAddress inetAddress = enumIpAddr.nextElement();
-                    if (!inetAddress.isLoopbackAddress()) {
-                        String ip = Formatter.formatIpAddress(inetAddress.hashCode());
-                        return ip;
-                    }
-                }
-            }
-        } catch (SocketException ex) {
-            ex.printStackTrace();
-        }
-        return null;
-    }*/
 }

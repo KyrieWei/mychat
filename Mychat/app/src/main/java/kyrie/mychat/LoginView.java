@@ -22,6 +22,8 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.Enumeration;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
+
 public class LoginView extends AppCompatActivity implements View.OnClickListener{
 
     private Button loginBtn;
@@ -35,6 +37,8 @@ public class LoginView extends AppCompatActivity implements View.OnClickListener
 
     private User client_user;
 
+    public SendMesInfo sendMesInfo;
+    private static SendMesSocket sendMesSocket = SendMesSocket.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,9 +57,12 @@ public class LoginView extends AppCompatActivity implements View.OnClickListener
 
     private void initData(){
         connector = new Client();
+        sendMesInfo = new SendMesInfo();
+        //sendMesSocket = (SendMesSocket
         loginBtn.setOnClickListener(this);
         tvRegisterLink.setOnClickListener(this);
     }
+
 
     public String getLocalIpAddress() {
         try {
@@ -105,6 +112,12 @@ public class LoginView extends AppCompatActivity implements View.OnClickListener
                 System.out.println("!!!!!!!!!!is Success:"  + connector.isSuccess);
                 if(connector.isSuccess.equals(connector.successed)){
                     Toast.makeText(this, "Login successfully ",Toast.LENGTH_SHORT).show();
+                    sendMesInfo.sendMes = " ";
+                    sendMesInfo.username_to = " ";
+                    sendMesInfo.username_from = Username;
+                    sendMesInfo.socketType = "login";
+                    sendMesSocket.startReceiveMsg(sendMesInfo);
+
                     Intent intent = new Intent(this, MainListView.class);
                     intent.putExtra("my_name", Username);
                     intent.putExtra("friendlist", connector.friendList);
