@@ -110,13 +110,14 @@ public class LoginView extends AppCompatActivity implements View.OnClickListener
                     e.printStackTrace();
                 }
                 System.out.println("!!!!!!!!!!is Success:"  + connector.isSuccess);
+                //System.out.println("!!!!!!!!he has friend: " + connector.friendList);
                 if(connector.isSuccess.equals(connector.successed)){
                     Toast.makeText(this, "Login successfully ",Toast.LENGTH_SHORT).show();
-                    sendMesInfo.sendMes = " ";
+/*                    sendMesInfo.sendMes = " ";
                     sendMesInfo.username_to = " ";
                     sendMesInfo.username_from = Username;
                     sendMesInfo.socketType = "login";
-                    sendMesSocket.startReceiveMsg(sendMesInfo);
+                    sendMesSocket.send(sendMesInfo);*/
 
                     Intent intent = new Intent(this, MainListView.class);
                     intent.putExtra("my_name", Username);

@@ -27,8 +27,6 @@ public class SendMesSocket {
     private static final SendMesSocket INSTANCE = new SendMesSocket();
     private boolean isStartRecieveMsg;
 
-
-    //private SocketHandler mHandler = new SocketHandler();
     public BufferedReader mReader;
     public BufferedWriter mWriter;
     public final static String IP_ADDR = "23.106.150.31";
@@ -67,7 +65,7 @@ public class SendMesSocket {
     }
 
 
-    public void startReceiveMsg(final SendMesInfo msg) {
+   /* public void startReceiveMsg(final SendMesInfo msg) {
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -88,31 +86,72 @@ public class SendMesSocket {
                     mWriter.write(json_out.toString() + "\n");
                     //System.out.println("the info which is gonna be sent to server: " + mWriter);
                     mWriter.flush();
-
-                    String data = mReader.readLine();
-                    JSONObject json = new JSONObject(data);
-                    System.out.println("the info which is from server: " + json);
-
-                    sendMesInfo.socketType = json.getString("socketType");
-                    if (sendMesInfo.socketType.equals("sendMsg")) {
-                        sendMesInfo.username_from = json.getString("from");
-                        sendMesInfo.username_to = json.getString("to");
-                        sendMesInfo.sendMes = json.getString("msg");
-                        msgArr.add(sendMesInfo);
-                    } else if (sendMesInfo.socketType.equals("online_friList")) {
-                        JSONArray online_friArr = json.getJSONArray("online_friendlist");
-                        if (online_friArr.length() == 0) {
+                    while (isStartRecieveMsg) {
+                        System.out.println("we are in while loop !!!!");
+                        String data = mReader.readLine();
+                        if(data == null){
+                            System.out.println("we receive the null data!!!!!!!!!");
                             onlineFriend = false;
-                        } else {
-                            for (int i = 0; i < online_friArr.length(); i++) {
-                                online_frilist.add(online_friArr.getString(i));
-                            }
-                            System.out.println("online_friend list: " + online_frilist);
+                        }else {
+                            JSONObject json = new JSONObject(data);
+                            System.out.println("the info which is from server: " + json);
+                            sendMesInfo.socketType = json.getString("socketType");
+                            sendMesInfo.username_from = json.getString("from");
+                            sendMesInfo.username_to = json.getString("to");
+                            sendMesInfo.sendMes = json.getString("msg");
+                            msgArr.add(sendMesInfo);
                         }
-                    } else {
-                        sendMesInfo.username_from = json.getString("from");
-                        sendMesInfo.username_to = json.getString("to");
-                        sendMesInfo.sendMes = json.getString("msg");
+                    }
+
+                    Thread.sleep(200);
+
+                    mWriter.close();
+                    mReader.close();
+                    mSocket.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.start();
+    }*/
+
+    public void startReceiveMsg() {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    isStartRecieveMsg = true;
+                    mSocket = new Socket(IP_ADDR, PORT);
+                    mReader = new BufferedReader(new InputStreamReader(mSocket.getInputStream(), "utf-8"));
+                    mWriter = new BufferedWriter(new OutputStreamWriter(mSocket.getOutputStream(), "utf-8"));
+
+                   /* JSONObject json_out = new JSONObject();
+                    json_out.put("to", msg.username_to);
+                    json_out.put("msg", msg.sendMes);
+                    json_out.put("from", msg.username_from);
+                    json_out.put("socketType", msg.socketType);
+
+                    System.out.println("the info which is gonna be sent to server: " + json_out);
+
+                    mWriter.write(json_out.toString() + "\n");
+                    //System.out.println("the info which is gonna be sent to server: " + mWriter);
+                    mWriter.flush();*/
+                    while (isStartRecieveMsg) {
+                        System.out.println("we are in while loop !!!!");
+                        String data = mReader.readLine();
+                        if(data == null){
+                            System.out.println("we receive the null data!!!!!!!!!");
+                            onlineFriend = false;
+                        }else {
+                            JSONObject json = new JSONObject(data);
+                            System.out.println("the info which is from server: " + json);
+                            sendMesInfo.socketType = json.getString("socketType");
+                            sendMesInfo.username_from = json.getString("from");
+                            sendMesInfo.username_to = json.getString("to");
+                            sendMesInfo.sendMes = json.getString("msg");
+                            msgArr.add(sendMesInfo);
+                        }
                     }
 
                     Thread.sleep(200);
@@ -127,7 +166,6 @@ public class SendMesSocket {
         });
         thread.start();
     }
-
     public ArrayList<String> getOnlineFriList() {
         ArrayList<String> online_frilist = new ArrayList<String>();
         try {
@@ -149,20 +187,38 @@ public class SendMesSocket {
     }
 
 
-    public void send() {
+    public void send(final SendMesInfo msg) {
         new AsyncTask<String, Integer, String>() {
             @Override
             protected String doInBackground(String... params) {
                 try {
-                    //connect();
                     JSONObject json = new JSONObject();
-                    json.put("to", sendMesInfo.username_to);
-                    json.put("msg", sendMesInfo.sendMes);
-                    json.put("from", sendMesInfo.username_from);
-                    json.put("socketType", sendMesInfo.socketType);
-                    System.out.println(json);
+                    json.put("to", msg.username_to);
+                    json.put("msg", msg.sendMes);
+                    json.put("from", msg.username_from);
+                    json.put("socketType", msg.socketType);
                     mWriter.write(json.toString() + "\n");
-                    System.out.println(mWriter);
+                    System.out.println("the info which is gonna be sent to server: " + json);
+                    mWriter.flush();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }.execute();
+    }
+
+    public void login(final SendMesInfo msg) {
+        new AsyncTask<String, Integer, String>() {
+            @Override
+            protected String doInBackground(String... params) {
+                try {
+                    JSONObject json = new JSONObject();
+                    json.put("to", msg.username_to);
+                    json.put("msg", msg.sendMes);
+                    json.put("from", msg.username_from);
+                    json.put("socketType", msg.socketType);
+                    mWriter.write(json.toString() + "\n");
                     mWriter.flush();
                 } catch (Exception e) {
                     e.printStackTrace();

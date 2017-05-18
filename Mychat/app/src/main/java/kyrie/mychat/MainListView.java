@@ -36,12 +36,12 @@ public class MainListView extends AppCompatActivity {
 
     public String my_name;
     public ArrayList<String> friendNameArr = new ArrayList<String>();
-    public ArrayList<String> friend_online = new ArrayList<String>();
+    //public ArrayList<String> friend_online = new ArrayList<String>();
     private long firstTime = 0;
 
-    private static SendMesSocket sendMesSocket = SendMesSocket.getInstance();
-    public SendMesInfo sendMesInfo;
-    public boolean isOnline;
+    //private static SendMesSocket sendMesSocket = SendMesSocket.getInstance();
+    //public SendMesInfo sendMesInfo;
+    //public boolean isOnline;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -73,8 +73,7 @@ public class MainListView extends AppCompatActivity {
         my_name = intent.getStringExtra("my_name");
         friendNameArr = intent.getStringArrayListExtra("friendlist");
 
-        //sendMesSocket = (SendMesSocket)getApplication();
-        sendMesInfo = new SendMesInfo();
+        //sendMesInfo = new SendMesInfo();
 
         ArrayList<friendInfo> arrayOfUsers = new ArrayList<friendInfo>();
 
@@ -93,33 +92,35 @@ public class MainListView extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 String sendMesTo_name = friendNameArr.get(position);
-                sendMesInfo.username_from = my_name;
+               /* sendMesInfo.username_from = my_name;
                 sendMesInfo.username_to = sendMesTo_name;
                 sendMesInfo.sendMes = " ";
                 sendMesInfo.socketType = "startchat";
                 sendMesSocket.startReceiveMsg(sendMesInfo);
                 //sendMesSocket.send();
-                friend_online = sendMesSocket.online_frilist;
+
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                friend_online = sendMesSocket.online_frilist;
                 System.out.println("!!!!!!!!!!!the friends who are online: " + friend_online);
                 isOnline = false;
                 for(String item : friend_online){
                     if(item.equals(sendMesTo_name)){
                         isOnline = true;
                     }
-                }
-                if(isOnline) {
-                    Intent intent = new Intent(MainListView.this, MainListView.class);
+                }*/
+                //if(isOnline) {
+                    Intent intent = new Intent(MainListView.this, chatView.class);
+                    //System.out.println("isOnline and new Intent!!!!!");
                     intent.putExtra("sendMsg_to", sendMesTo_name);
                     intent.putExtra("my_name", my_name);
                     startActivity(intent);
-                }else {
-                    Toast.makeText(MainListView.this, "Sorry, he / she is not online!", Toast.LENGTH_SHORT).show();
-                }
+                //}else {
+                //    Toast.makeText(MainListView.this, "Sorry, he / she is not online!", Toast.LENGTH_SHORT).show();
+                //}
             }
         });
     }

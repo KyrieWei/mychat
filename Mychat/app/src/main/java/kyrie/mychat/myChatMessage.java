@@ -8,8 +8,8 @@ public class myChatMessage {
     public static final int MessageType_from=1;
     public static final int MessageType_to=2;
 
-    private int mtype;
-    private String mContent;
+    public int mtype;
+    public String mContent;
 
     public myChatMessage(int type, String content){
         this.mtype = type;

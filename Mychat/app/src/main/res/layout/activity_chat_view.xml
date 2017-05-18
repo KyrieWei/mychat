@@ -14,14 +14,13 @@
 
         <ListView
             android:id="@+id/chatListView"
-            android:divider="@color/trans_dividerColor"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
+            android:divider="@color/trans_dividerColor"
             android:stackFromBottom="true"
-            android:transcriptMode="alwaysScroll">
-        </ListView>
+            android:transcriptMode="alwaysScroll"></ListView>
 
     </LinearLayout>
     <LinearLayout

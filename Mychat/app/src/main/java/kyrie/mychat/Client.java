@@ -116,6 +116,7 @@ public class Client {
                         friendList.add(fri.getString(i));
                     }
                     System.out.println("!!!!!!!!!!!the byte is: " + is_suc);
+                    System.out.println("!!!!!!!!he has friend: " + friendList);
                     if(is_suc.equals(username_duplicated)){
                         isSuccess = username_duplicated;
                     }else if(is_suc.equals(username_not_exist)){
