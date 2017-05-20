@@ -16,6 +16,8 @@ import java.util.List;
  */
 
 public class MessageAdapter extends ArrayAdapter{
+
+    private ArrayList<myChatMessage> mList;
     public MessageAdapter(Context context, ArrayList<myChatMessage> mess) {
         super(context,0, mess);
     }
@@ -53,5 +55,9 @@ public class MessageAdapter extends ArrayAdapter{
     @Override
     public boolean isEnabled(int position) {
         return false;
+    }
+
+    public void refresh(ArrayList<myChatMessage> list){
+
     }
 }

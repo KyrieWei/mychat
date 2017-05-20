@@ -9,20 +9,16 @@ import java.net.URL;
  * Created by Kyrie_wei on 28/04/2017.
  */
 
-public class User {
+public class registerUser {
     public String userName;
-    //public String IP_ADDR;
-    //public int PORT;
     public String passWord;
     public String type;
-    //public String avatarUrl_Str;
+    public String avatarUrl_Str;
 
-    public User(String userName,String passWord, String type){
+    public registerUser(String userName, String passWord, String type, String avatarUrl_Str){
         this.userName = userName;
-        //this.avatarUrl_Str = avatarUrl_Str;
+        this.avatarUrl_Str = avatarUrl_Str;
         this.passWord = passWord;
-        //this.IP_ADDR = IP_ADDR;
-        //this.PORT = PORT;
         this.type = type;
     }
 }

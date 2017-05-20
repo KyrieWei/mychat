@@ -23,7 +23,8 @@ public class chatView extends AppCompatActivity implements View.OnClickListener{
     EditText editMesView;
     Button sendMesBtn;
     public ArrayList<myChatMessage> mData = new ArrayList<myChatMessage>();;
-    public MessageAdapter mAdapter;
+
+    public chatViewAdapter CVAdapter;
 
     public String my_name;
     public String friend_name;
@@ -44,31 +45,24 @@ public class chatView extends AppCompatActivity implements View.OnClickListener{
         editMesView.setMovementMethod(new ScrollingMovementMethod());
         sendMesBtn = (Button) findViewById(R.id.sendMesBtn);
         sendMesBtn.setOnClickListener(this);
-        //mData = new ArrayList<myChatMessage>();
+
         //mData = LoadData();
-        mAdapter = new MessageAdapter(this, mData);
-        chatListView.setAdapter(mAdapter);
+
+        CVAdapter = new chatViewAdapter(mData,this);
+        chatListView.setAdapter(CVAdapter);
         chatListView.smoothScrollToPositionFromTop(mData.size(),0);
         Intent intent = getIntent();
         friend_name = intent.getStringExtra("sendMsg_to");
         my_name = intent.getStringExtra("my_name");
-        //sendMesSocket.startReceiveMsg();
-        //getNewInfo();
-        handler.postDelayed(update,200);
 
-        sendMesSocket.startReceiveMsg();
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        handler.postDelayed(update,200);
 
         msg_to_send.sendMes = " ";
         msg_to_send.username_to = " ";
         msg_to_send.username_from = my_name;
         msg_to_send.socketType = "login";
         sendMesSocket.send(msg_to_send);
-        //mAdapter.notifyDataSetChanged();
+
     }
     Runnable update = new Runnable() {
         @Override
@@ -78,7 +72,7 @@ public class chatView extends AppCompatActivity implements View.OnClickListener{
                 for(int i = msgArr.size(); i < sendMesSocket.msgArr.size(); i ++ ){
                     msgArr.add(sendMesSocket.msgArr.get(i));
                     myChatMessage mMessage = new myChatMessage(myChatMessage.MessageType_from,msgArr.get(i).sendMes);
-                    mData.add(mMessage);
+                    mhandler.obtainMessage(0,mMessage).sendToTarget();
                 }
             }
             handler.postDelayed(this,200);
@@ -93,10 +87,7 @@ public class chatView extends AppCompatActivity implements View.OnClickListener{
             switch (msg.what){
                 case 0:
                     mData.add((myChatMessage)msg.obj);
-                    for(myChatMessage item : mData){
-                        System.out.println("the message of the type is : " + item.mtype + " and the content is " + item.mContent);
-                    }
-                    //mAdapter.notifyDataSetChanged();
+                    CVAdapter.refresh(mData);
                     break;
                 default:
                     break;
@@ -107,27 +98,6 @@ public class chatView extends AppCompatActivity implements View.OnClickListener{
     public void getuserInfo(String user_from, String user_to){
         msg_to_send.username_from = user_from;
         msg_to_send.username_to = user_to;
-    }
-
-    public void getNewInfo(){
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while(true){
-                    int k =  sendMesSocket.msgArr.size() - msgArr.size();
-                    if( k != 0){
-                        for(int i = msgArr.size(); i < sendMesSocket.msgArr.size(); i ++ ){
-                            msgArr.add(sendMesSocket.msgArr.get(i));
-                            myChatMessage Message = new myChatMessage(myChatMessage.MessageType_from,msgArr.get(i).sendMes);
-                            System.out.println("new message from server: " +  Message);
-                            mData.add(Message);
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    }
-                }
-            }
-        });
-        thread.start();
     }
 
 
@@ -183,7 +153,7 @@ public class chatView extends AppCompatActivity implements View.OnClickListener{
 
             myChatMessage Message = new myChatMessage(myChatMessage.MessageType_to, sendMes);
             mData.add(Message);
-            //mAdapter.notifyDataSetChanged();
+            CVAdapter.refresh(mData);
 
             System.out.println("the size of message array is : " + mData.size());
             for(myChatMessage item : mData){

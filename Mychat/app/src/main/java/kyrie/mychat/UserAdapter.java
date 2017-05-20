@@ -26,7 +26,6 @@ public class UserAdapter extends ArrayAdapter<friendInfo> {
         TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
         tvName.setText(user.friend_name);
         ImageView tvAvatar = (ImageView) convertView.findViewById(R.id.tvAvatar);
-        //new ImageLoad(user.avatarUrl_Str,tvAvatar).execute();
         tvAvatar.setImageResource(R.drawable.huaji);
         return convertView;
     }

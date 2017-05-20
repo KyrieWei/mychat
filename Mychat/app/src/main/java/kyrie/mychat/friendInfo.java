@@ -8,6 +8,8 @@ public class friendInfo {
     public String friend_name;
     public String friend_ava_url;
 
+    public friendInfo(){}
+
     public friendInfo(String friend_name, String friend_ava_url){
         this.friend_name = friend_name;
         this.friend_ava_url = friend_ava_url;

@@ -64,6 +64,11 @@
         android:layout_marginTop="8dp"
         android:layout_marginRight="20dp"
        />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:orientation="horizontal">
 
     <TextView
         android:id="@+id/upLoadAvatar"
@@ -71,11 +76,26 @@
         android:textSize="20dp"
         android:textAlignment="center"
         android:textColor="@color/colorPrimaryDark"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="30dp"/>
+        android:layout_marginTop="30dp"
+        android:clickable="false"/>
+
+    <ImageView
+        android:id="@+id/imaLoad_view"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/image_view"
+        android:clickable="true" />
+
+</LinearLayout>
+
 
 
     <Button

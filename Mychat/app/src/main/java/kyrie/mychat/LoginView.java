@@ -20,6 +20,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.Socket;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
@@ -35,10 +36,11 @@ public class LoginView extends AppCompatActivity implements View.OnClickListener
     private HandlerThread handlerThread;
     private Handler handler;
 
-    private User client_user;
+    private loginUser client_user;
 
     public SendMesInfo sendMesInfo;
     private static SendMesSocket sendMesSocket = SendMesSocket.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +84,6 @@ public class LoginView extends AppCompatActivity implements View.OnClickListener
         return null;
     }
 
-
     @Override
     public  void onClick(View v){
         switch(v.getId()){
@@ -91,10 +92,10 @@ public class LoginView extends AppCompatActivity implements View.OnClickListener
                 String Password = etPassword.getText().toString().trim();
                 //String IP_ADDR = getLocalIpAddress();
                 String type = "login";
-                client_user = new User(Username,Password,type);
+                client_user = new loginUser(Username,Password,type);
 
                 if (TextUtils.isEmpty(Username)){
-                    Toast.makeText(this, "User Name Cannot Be Empty!",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "registerUser Name Cannot Be Empty!",Toast.LENGTH_SHORT).show();
                     return;
                 }
                 if (TextUtils.isEmpty(Password)){
@@ -103,26 +104,21 @@ public class LoginView extends AppCompatActivity implements View.OnClickListener
                 }
 
                 connector.LoginRequest(client_user);
-                //connector.sendUserInfo(Username,Password,type);
                 try {
                     Thread.sleep(2500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 System.out.println("!!!!!!!!!!is Success:"  + connector.isSuccess);
-                //System.out.println("!!!!!!!!he has friend: " + connector.friendList);
                 if(connector.isSuccess.equals(connector.successed)){
                     Toast.makeText(this, "Login successfully ",Toast.LENGTH_SHORT).show();
-/*                    sendMesInfo.sendMes = " ";
-                    sendMesInfo.username_to = " ";
-                    sendMesInfo.username_from = Username;
-                    sendMesInfo.socketType = "login";
-                    sendMesSocket.send(sendMesInfo);*/
+
+                    sendMesSocket.startReceiveMsg();
 
                     Intent intent = new Intent(this, MainListView.class);
                     intent.putExtra("my_name", Username);
                     intent.putExtra("friendlist", connector.friendList);
-                    startActivity(intent);
+                    //startActivity(intent);
                 }else if(connector.isSuccess.equals(connector.username_not_exist)){
                     Toast.makeText(this,"Login Failed! The user does not exist!",Toast.LENGTH_SHORT).show();
                 }else if(connector.isSuccess.equals(connector.server_failed)){
