@@ -35,7 +35,7 @@ import static kyrie.mychat.R.id.parent;
 public class MainListView extends AppCompatActivity {
 
     public String my_name;
-    public ArrayList<String> friendNameArr = new ArrayList<String>();
+    public ArrayList<friendInfo> friendNameArr = new ArrayList<friendInfo>();
 
     private long firstTime = 0;
 
@@ -68,15 +68,13 @@ public class MainListView extends AppCompatActivity {
 
         Intent intent = getIntent();
         my_name = intent.getStringExtra("my_name");
-        friendNameArr = intent.getStringArrayListExtra("friendList");
-
-
+        friendNameArr = intent.getParcelableArrayListExtra("friendlist");
 
         ArrayList<friendInfo> arrayOfUsers = new ArrayList<friendInfo>();
 
         for (int i = 0; i < friendNameArr.size(); i ++){
-            friendInfo friend_item = new friendInfo(friendNameArr.get(i),avaurl);
-            arrayOfUsers.add(friend_item);
+            arrayOfUsers.add(friendNameArr.get(i));
+            System.out.println("i have friend: " + arrayOfUsers.get(i).friend_name);
         }
 
         UserAdapter adapter = new UserAdapter(this,arrayOfUsers);
@@ -88,7 +86,7 @@ public class MainListView extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                String sendMesTo_name = friendNameArr.get(position);
+                String sendMesTo_name = friendNameArr.get(position).friend_name;
 
                     Intent intent = new Intent(MainListView.this, chatView.class);
                     //System.out.println("isOnline and new Intent!!!!!");

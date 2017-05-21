@@ -40,6 +40,7 @@ public class LoginView extends AppCompatActivity implements View.OnClickListener
 
     public SendMesInfo sendMesInfo;
     private static SendMesSocket sendMesSocket = SendMesSocket.getInstance();
+    public ArrayList<friendInfo> friendInfoArrayList = new ArrayList<friendInfo>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,21 +105,28 @@ public class LoginView extends AppCompatActivity implements View.OnClickListener
                 }
 
                 connector.LoginRequest(client_user);
-                try {
-                    Thread.sleep(2500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                while(true){
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if(connector.loading){
+                        break;
+                    }
+
                 }
                 System.out.println("!!!!!!!!!!is Success:"  + connector.isSuccess);
                 if(connector.isSuccess.equals(connector.successed)){
                     Toast.makeText(this, "Login successfully ",Toast.LENGTH_SHORT).show();
 
                     sendMesSocket.startReceiveMsg();
-
+                    friendInfoArrayList = connector.friendList;
                     Intent intent = new Intent(this, MainListView.class);
                     intent.putExtra("my_name", Username);
-                    intent.putExtra("friendlist", connector.friendList);
-                    //startActivity(intent);
+                    intent.putParcelableArrayListExtra("friendlist", friendInfoArrayList);
+
+                    startActivity(intent);
                 }else if(connector.isSuccess.equals(connector.username_not_exist)){
                     Toast.makeText(this,"Login Failed! The user does not exist!",Toast.LENGTH_SHORT).show();
                 }else if(connector.isSuccess.equals(connector.server_failed)){

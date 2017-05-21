@@ -4,10 +4,13 @@ package kyrie.mychat;
  * Created by Kyrie_wei on 01/05/2017.
  */
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.JsonWriter;
 import android.widget.Toast;
 
 import net.sf.json.JSONObject;
+//import org.json.JSONObject;
 import net.sf.json.JSONArray;
 import net.sf.json.JSON;
 
@@ -25,7 +28,7 @@ import java.util.List;
 import java.util.logging.SocketHandler;
 
 
-public class Client {
+public class Client{
     public static final String IP_ADDR = "23.106.150.31";
     public static final int PORT = 9602;
     public Socket socket;
@@ -38,9 +41,11 @@ public class Client {
     final public String password_wrong = "4";
     final public String successed = "0";
 
-    public String isSuccess = successed;
+    public String isSuccess = server_failed;
     public ArrayList<friendInfo> friendList = new ArrayList<friendInfo>();
+    public boolean loading = false;
 
+    public Client(){}
 
     public  void registerRequest(registerUser user){
         final registerUser _user = user;
@@ -101,20 +106,23 @@ public class Client {
             public void run() {
                 super.run();
                 try {
+                    System.out.println("start connect to socket!!!!!");
                     socket = new Socket(IP_ADDR, PORT);
                     in = new BufferedReader(new InputStreamReader(socket.getInputStream(),"utf-8"));
                     out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(),"utf-8"));
                     JSONObject json = new JSONObject();
+                    System.out.println("write successfully!!!!!");
                     json.put("username",_user.userName);
                     json.put("password",_user.password);
                     json.put("type",_user.type);
+
                     out.write(json.toString() + "\n");
                     out.flush();
+
                     String data = in.readLine();
                     JSONObject rec_msg = JSONObject.fromObject(data);
 
                     String is_suc = rec_msg.getString("is_success");
-                    //String[] friinfo = (String[]) rec_msg.get("friendList");
                     JSONArray fri = rec_msg.getJSONArray("friendlist");
 
 
@@ -125,6 +133,7 @@ public class Client {
                         String friendava = item.getString("friend_ava");
                         friendInfo friend_item = new friendInfo(friendname,friendava);
                         friendList.add(friend_item);
+                        loading = true;
                         System.out.println("!!!!!!!!!!!the JSONARRAY is: " + friendname);
                     }
 
@@ -157,4 +166,29 @@ public class Client {
         }.start();
     }
 
+    /*public Client(Parcel parcel){
+        this.friendList = parcel.readArrayList(null);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeList(friendList);
+    }
+
+    public static Creator<Client> CREATOR = new Creator<Client>() {
+        @Override
+        public Client createFromParcel(Parcel source) {
+            return new Client(source);
+        }
+
+        @Override
+        public Client[] newArray(int size) {
+            return new Client[0];
+        }
+    };*/
 }
