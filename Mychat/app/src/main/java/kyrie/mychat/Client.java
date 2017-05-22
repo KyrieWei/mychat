@@ -42,7 +42,7 @@ public class Client{
     final public String successed = "0";
 
     public String isSuccess = server_failed;
-    public ArrayList<friendInfo> friendList = new ArrayList<friendInfo>();
+    public static ArrayList<friendInfo> friendList = new ArrayList<friendInfo>();
     public boolean loading = false;
 
     public Client(){}
@@ -66,10 +66,7 @@ public class Client{
                     String data = in.readLine();
                     JSONObject rec_msg = JSONObject.fromObject(data);
                     String is_suc = rec_msg.getString("is_success");
-                    //JSONArray fri = rec_msg.getJSONArray("friendlist");
-                    //for (int i = 0; i < fri.length(); i ++){
 
-                    //}
                     System.out.println("!!!!!!!!!!!the byte is: " + is_suc);
                     //System.out.println("!!!!!!!!he has friend: " + friendList);
                     if(is_suc.equals(username_duplicated)){
@@ -166,29 +163,4 @@ public class Client{
         }.start();
     }
 
-    /*public Client(Parcel parcel){
-        this.friendList = parcel.readArrayList(null);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeList(friendList);
-    }
-
-    public static Creator<Client> CREATOR = new Creator<Client>() {
-        @Override
-        public Client createFromParcel(Parcel source) {
-            return new Client(source);
-        }
-
-        @Override
-        public Client[] newArray(int size) {
-            return new Client[0];
-        }
-    };*/
 }

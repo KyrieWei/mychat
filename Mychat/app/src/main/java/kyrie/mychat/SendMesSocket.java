@@ -126,17 +126,6 @@ public class SendMesSocket {
                     mReader = new BufferedReader(new InputStreamReader(mSocket.getInputStream(), "utf-8"));
                     mWriter = new BufferedWriter(new OutputStreamWriter(mSocket.getOutputStream(), "utf-8"));
 
-                   /* JSONObject json_out = new JSONObject();
-                    json_out.put("to", msg.username_to);
-                    json_out.put("msg", msg.sendMes);
-                    json_out.put("from", msg.username_from);
-                    json_out.put("socketType", msg.socketType);
-
-                    System.out.println("the info which is gonna be sent to server: " + json_out);
-
-                    mWriter.write(json_out.toString() + "\n");
-                    //System.out.println("the info which is gonna be sent to server: " + mWriter);
-                    mWriter.flush();*/
                     while (isStartRecieveMsg) {
                         System.out.println("we are in while loop !!!!");
                         String data = mReader.readLine();
@@ -166,7 +155,7 @@ public class SendMesSocket {
         });
         thread.start();
     }
-    public ArrayList<String> getOnlineFriList() {
+/*    public ArrayList<String> getOnlineFriList() {
         ArrayList<String> online_frilist = new ArrayList<String>();
         try {
             //connect();
@@ -184,7 +173,7 @@ public class SendMesSocket {
             e.printStackTrace();
         }
         return online_frilist;
-    }
+    }*/
 
 
     public void send(final SendMesInfo msg) {
@@ -198,7 +187,7 @@ public class SendMesSocket {
                     json.put("from", msg.username_from);
                     json.put("socketType", msg.socketType);
                     mWriter.write(json.toString() + "\n");
-                    System.out.println("the info which is gonna be sent to server: " + json);
+                    //System.out.println("the info which is gonna be sent to server: " + json);
                     mWriter.flush();
                 } catch (Exception e) {
                     e.printStackTrace();

@@ -1,6 +1,9 @@
 package kyrie.mychat;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.StrictMode;
@@ -8,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.Formatter;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +19,7 @@ import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -117,15 +122,13 @@ public class LoginView extends AppCompatActivity implements View.OnClickListener
 
                 }
                 System.out.println("!!!!!!!!!!is Success:"  + connector.isSuccess);
+
                 if(connector.isSuccess.equals(connector.successed)){
                     Toast.makeText(this, "Login successfully ",Toast.LENGTH_SHORT).show();
-
                     sendMesSocket.startReceiveMsg();
                     friendInfoArrayList = connector.friendList;
                     Intent intent = new Intent(this, MainListView.class);
                     intent.putExtra("my_name", Username);
-                    intent.putParcelableArrayListExtra("friendlist", friendInfoArrayList);
-
                     startActivity(intent);
                 }else if(connector.isSuccess.equals(connector.username_not_exist)){
                     Toast.makeText(this,"Login Failed! The user does not exist!",Toast.LENGTH_SHORT).show();

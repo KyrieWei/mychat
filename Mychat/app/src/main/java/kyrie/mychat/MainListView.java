@@ -36,6 +36,7 @@ public class MainListView extends AppCompatActivity {
 
     public String my_name;
     public ArrayList<friendInfo> friendNameArr = new ArrayList<friendInfo>();
+    public Client client_MLV = new Client();
 
     private long firstTime = 0;
 
@@ -68,13 +69,14 @@ public class MainListView extends AppCompatActivity {
 
         Intent intent = getIntent();
         my_name = intent.getStringExtra("my_name");
-        friendNameArr = intent.getParcelableArrayListExtra("friendlist");
-
-        ArrayList<friendInfo> arrayOfUsers = new ArrayList<friendInfo>();
+        friendNameArr = client_MLV.friendList;
+        final ArrayList<friendInfo> arrayOfUsers = new ArrayList<friendInfo>();
 
         for (int i = 0; i < friendNameArr.size(); i ++){
-            arrayOfUsers.add(friendNameArr.get(i));
-            System.out.println("i have friend: " + arrayOfUsers.get(i).friend_name);
+            if(!(friendNameArr.get(i).friend_name.equals(my_name))) {
+                arrayOfUsers.add(friendNameArr.get(i));
+                //System.out.println("i have friend: " + arrayOfUsers.get(i).friend_name);
+            }
         }
 
         UserAdapter adapter = new UserAdapter(this,arrayOfUsers);
@@ -86,8 +88,7 @@ public class MainListView extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                String sendMesTo_name = friendNameArr.get(position).friend_name;
-
+                String sendMesTo_name = arrayOfUsers.get(position).friend_name;
                     Intent intent = new Intent(MainListView.this, chatView.class);
                     //System.out.println("isOnline and new Intent!!!!!");
                     intent.putExtra("sendMsg_to", sendMesTo_name);

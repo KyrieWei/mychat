@@ -49,32 +49,49 @@ public class chatViewAdapter extends BaseAdapter {
         myChatMessage mes = (myChatMessage) getItem(position);
         System.out.println("the message in getView function is : " + mes.mContent + " type is : " + mes.mtype);
         Holder holder = null;
+        Holder_ima holder_ima = null;
         switch(mes.getType()){
             case myChatMessage.MessageType_from:
-                //if (convertView == null) {
-                    convertView = LayoutInflater.from(mContext).inflate(R.layout.rec_mes_layout,null);
-                    holder = new Holder();
-                    holder.Content = (TextView)convertView.findViewById(R.id.rec_mes_view);
-                    holder.ava_view = (ImageView)convertView.findViewById(R.id.rec_avatar_view);
-                    convertView.setTag(holder);
-                //}else{
-                    //holder = (Holder)convertView.getTag();
-                //}
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.rec_mes_layout,null);
+                holder = new Holder();
+                holder.Content = (TextView)convertView.findViewById(R.id.rec_mes_view);
+                holder.ava_view = (ImageView)convertView.findViewById(R.id.rec_avatar_view);
+                convertView.setTag(holder);
                 holder.Content.setText(mList.get(position).getContent());
-                holder.ava_view.setImageResource(R.drawable.huaji);
+                holder.ava_view.setImageBitmap(mList.get(position).bm);
+                holder.ava_view.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 break;
             case myChatMessage.MessageType_to:
-                //if (convertView == null) {
-                    convertView = LayoutInflater.from(mContext).inflate(R.layout.send_mes_layout,null);
-                    holder = new Holder();
-                    holder.Content = (TextView)convertView.findViewById(R.id.send_mes_view);
-                    holder.ava_view = (ImageView)convertView.findViewById(R.id.send_avatar_view);
-                    convertView.setTag(holder);
-                //}else{
-                    //holder = (Holder)convertView.getTag();
-                //}
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.send_mes_layout,null);
+                holder = new Holder();
+                holder.Content = (TextView)convertView.findViewById(R.id.send_mes_view);
+                holder.ava_view = (ImageView)convertView.findViewById(R.id.send_avatar_view);
+                convertView.setTag(holder);
                 holder.Content.setText(mList.get(position).getContent());
-                holder.ava_view.setImageResource(R.drawable.huaji);
+                holder.ava_view.setImageBitmap(mList.get(position).bm);
+                holder.ava_view.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                break;
+            case myChatMessage.MessageType_to_ima:
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.send_image_view,null);
+                holder_ima = new Holder_ima();
+                holder_ima.ava_view = (ImageView)convertView.findViewById(R.id.sendima_avatar_view);
+                holder_ima.ima_view = (ImageView)convertView.findViewById(R.id.send_image_view);
+                convertView.setTag(holder_ima);
+                holder_ima.ava_view.setImageBitmap(mList.get(position).bm);
+                holder_ima.ava_view.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                holder_ima.ima_view.setImageBitmap(mList.get(position).image);
+                holder_ima.ava_view.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                break;
+            case myChatMessage.MessageType_from_ima:
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.rec_image_view,null);
+                holder_ima = new Holder_ima();
+                holder_ima.ava_view = (ImageView)convertView.findViewById(R.id.recima_avatar_view);
+                holder_ima.ima_view = (ImageView)convertView.findViewById(R.id.rec_image_view);
+                convertView.setTag(holder_ima);
+                holder_ima.ava_view.setImageBitmap(mList.get(position).bm);
+                holder_ima.ava_view.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                holder_ima.ima_view.setImageBitmap(mList.get(position).image);
+                holder_ima.ava_view.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 break;
         }
         return convertView;
@@ -83,6 +100,11 @@ public class chatViewAdapter extends BaseAdapter {
     class Holder {
         private TextView Content;
         private ImageView ava_view;
+    }
+
+    class Holder_ima{
+        private ImageView ava_view;
+        private ImageView ima_view;
     }
 
 }

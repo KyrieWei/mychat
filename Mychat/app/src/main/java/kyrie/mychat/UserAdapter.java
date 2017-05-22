@@ -1,6 +1,9 @@
 package kyrie.mychat;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -26,7 +29,10 @@ public class UserAdapter extends ArrayAdapter<friendInfo> {
         TextView tvName = (TextView) convertView.findViewById(R.id.tvName);
         tvName.setText(user.friend_name);
         ImageView tvAvatar = (ImageView) convertView.findViewById(R.id.tvAvatar);
-        tvAvatar.setImageResource(R.drawable.huaji);
+        byte[] avatar = Base64.decode(user.friend_ava_url, Base64.DEFAULT);
+        Bitmap bm = BitmapFactory.decodeByteArray(avatar,0,avatar.length);
+        tvAvatar.setImageBitmap(bm);
+        tvAvatar.setScaleType(ImageView.ScaleType.CENTER_CROP);
         return convertView;
     }
 
